@@ -22,6 +22,8 @@
 }
 
 #dynamic-content{
+    align-content: space-evenly;
+    justify-content: space-evenly;
     flex-direction: column;
 }
 

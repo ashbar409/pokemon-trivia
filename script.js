@@ -30,7 +30,6 @@ button.addEventListener('click', async () => {
         currentPokemon = new Pokemon(pokedexEntryData.id, pokedexEntryData.name, pokedexEntryData.flavor_text_entries, pokemonGameData.types, pokedexEntryData.generation.name, pokemonGameData.stats, pokedexEntryData.egg_groups, pokemonGameData.abilities, pokemonGameData.moves, pokemonGameData.held_items, pokedexEntryData.genera)
         console.log(currentPokemon)
         generateHints(currentPokemon)
-        spriteImage.src = currentPokemon.sprite
         createContent(hints[0])
     } catch (error) {
 
@@ -41,11 +40,49 @@ button.addEventListener('click', async () => {
 })
 
 function generateHints (pokemonObject){
+
     if (pokemonObject.types.length > 1){
         hints.push(`This pokemon is ${pokemonObject.types[0]} and ${pokemonObject.types[1]} type`)
     } else if (pokemonObject.types.length = 1){
         hints.push(`This pokemon is ${pokemonObject.types[0]} type`)
     }
+
+    hints.push(`This pokemon is from ${pokemonObject.generation}`)
+
+    if (pokemonObject.evYield.length > 1){
+        hints.push(`This pokemon yields ${pokemonObject.evYield[0].yeild} ${pokemonObject.evYield[0].name} and ${pokemonObject.evYield[1].yeild} ${pokemonObject.evYield[1].name} EVs`)
+    } else if (pokemonObject.evYield.length = 1){
+        hints.push(`This pokemon yields ${pokemonObject.evYield[0].yeild} ${pokemonObject.evYield[0].name} EVs`)
+    }
+
+    if (pokemonObject.eggGroups.length > 1){
+        hints.push(`This pokemon is from the ${pokemonObject.eggGroups[0]} and ${pokemonObject.eggGroups[1]} egg groups`)
+    } else if (pokemonObject.eggGroups[0] == 'no-eggs'){
+        hints.push(`This pokemon does not have any egg groups`)
+    } else if (pokemonObject.eggGroups.length == 1){
+        hints.push(`This pokemon is from the ${pokemonObject.eggGroups[0]} egg group`)
+    }
+
+    if (pokemonObject.abilities.length == 1){
+        hints.push(`This pokemon's only ability is ${pokemonObject.abilities[0]}`)
+    } else if (pokemonObject.abilities.length == 2){
+        hints.push(`This pokemon's possible abilities are ${pokemonObject.abilities[0]} and ${pokemonObject.abilities[1]}`)
+    } else if (pokemonObject.abilities.length == 3){
+        hints.push(`This pokemon's possible abilities are ${pokemonObject.abilities[0]}, ${pokemonObject.abilities[1]}, and ${pokemonObject.abilities[2]}`)
+    }
+
+    let move = pokemonObject.moves[Math.floor(Math.random()*pokemonObject.moves.length)]
+    hints.push(`One of the moves this pokemon can learn is ${move}`)
+
+    if (pokemonObject.heldItems.length == 0){
+        hints.push(`This pokemon never has a held item in the wild`)
+    } else if (pokemonObject.heldItems.length == 1){
+        hints.push(`This pokemon sometimes is caught holding a ${pokemonObject.heldItems[0]}`)
+    } else if (pokemonObject.heldItems.length >= 2){
+        hints.push(`This pokemon sometimes is caught holding a ${pokemonObject.heldItems[0]} or ${pokemonObject.heldItems[1]}`)
+    }
+
+    hints.push(`This pokemon is known as the ${pokemonObject.genus}`)
 }
 
 function createContent (hintAttribute){
@@ -62,7 +99,19 @@ function createContent (hintAttribute){
     newButtonImg.width = '150';
     newButton.classList.toggle('pokeball')
     newButton.appendChild(newButtonImg)
-    newButton.onclick = parseGuess(newInput.value)
+    newButton.onclick = function () {
+        newDiv.removeChild(newButton)
+        guessCounter++
+        console.log('Running guess')
+        if (newInput.value.toLowerCase() == currentPokemon.name){
+            console.log('correct guess')
+            spriteImage.src = currentPokemon.sprite
+        } else if (guessCounter <= 7){
+            createContent(hints[guessCounter])
+        } else if (guessCounter > 7){
+            spriteImage.src = currentPokemon.sprite
+        }
+    }
 
     newDiv.appendChild(newHint)
     newDiv.appendChild(newInput)
@@ -72,7 +121,7 @@ function createContent (hintAttribute){
 }
 
 function parseGuess (guess) {
-
+    
 }
 
 class Pokemon {
@@ -142,7 +191,7 @@ class Pokemon {
         //Parse input for abilities' names only
         let abilityBuilder = []
         abilities.forEach(element => {
-            abilityBuilder.push({name: element.ability.name, is_hidden: element.is_hidden})
+            abilityBuilder.push(element.ability.name)
         })
 
         this.abilities = abilityBuilder
