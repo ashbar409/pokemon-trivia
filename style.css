@@ -1,0 +1,73 @@
+.flex{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-content: space-between;
+}
+
+.hint-and-guess{
+    color: ghostwhite;
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+    align-content: center;
+}
+
+.pokeball{
+    border-radius: 50%;
+    background-color: #303030;
+    height: 150px;
+    width: 150px;
+    border-style: none;
+}
+
+#dynamic-content{
+    flex-direction: column;
+}
+
+#sprite{
+    height: 500px; 
+    width: 500px;
+    align-self: center;
+}
+
+body{
+    background-color: #303030;
+    
+    font-family: 'Press Start 2P', cursive;
+}
+
+header{
+    display: flex;
+    align-content: space-around;
+}
+
+h1{
+    color: #ffcb05;
+    font-family: 'Press Start 2P', cursive;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+p{
+    color: inherit;
+    font-family: inherit;
+    align-self: center;
+}
+
+input{
+    align-self: center;
+    justify-self: center;
+    height: 50px;
+    color: black;
+    font-family: inherit;
+}
+
+button{
+    height: 50px;
+    border-style: outset;
+    color: #ffcb05;
+    background-color: #3B4CCA;
+    font-family: inherit;
+    align-self: center;
+}
