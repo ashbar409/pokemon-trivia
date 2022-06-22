@@ -41,7 +41,7 @@ button.addEventListener('click', async () => {
 
     } catch (error) {
 
-        console.log(error)
+        
 
     }
 
@@ -96,7 +96,6 @@ function generateHints (pokemonObject){
 
 function roundStart (pokedexData, gameData) {
     currentPokemon = new Pokemon(pokedexData.id, pokedexData.name, pokedexData.flavor_text_entries, gameData.types, pokedexData.generation.name, gameData.stats, pokedexData.egg_groups, gameData.abilities, gameData.moves, gameData.held_items, pokedexData.genera)
-    console.log(currentPokemon)
     generateHints(currentPokemon)
     createContent(hints[0])
 }
@@ -123,7 +122,6 @@ function createContent (hintAttribute){
         guessCounter++
 
         if (newInput.value.toLowerCase() == currentPokemon.name){
-            console.log('correct guess')
             playerScore++
             spriteImage.src = currentPokemon.sprite
 
@@ -318,7 +316,8 @@ class Pokemon {
         }
 
         this.number = number
-        this.name = name
+        name = name.split('-')
+        this.name = name.join(' ')
         this.sprite = `https://www.serebii.net/pokemon/art/${number}.png`
 
         //Parse input for english flavor texts and remove multiples of the same entries
