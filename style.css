@@ -21,6 +21,14 @@
     border-style: none;
 }
 
+#results{
+    color: ghostwhite;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-content: center;
+}
+
 #dynamic-content{
     align-content: space-evenly;
     justify-content: space-evenly;

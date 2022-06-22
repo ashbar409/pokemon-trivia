@@ -5,10 +5,17 @@ let pokedexEntryData = null
 let pokemonGameData = null
 let currentPokemon = null
 let pokeName = ''
+let pokeID = 1
 let button = document.querySelector('button')
 let spriteImage = document.querySelector('#sprite')
-let pageContent = document.body.children[2]
+let resultText = document.querySelector('#flavor-text')
+let roundResults = document.querySelector('#round-end')
+let gameResults = document.querySelector('#game-end')
+let pageContent = document.querySelector('#dynamic-content')
+let resultsContent = document.querySelector('#results')
 let guessCounter = 0
+let comScore = 0
+let playerScore = 0
 let hints = []
 
 button.addEventListener('click', async () => {
@@ -20,17 +27,18 @@ button.addEventListener('click', async () => {
             pokedex = pokedex.data.pokemon_entries;
         }
 
-        let pokeID = Math.ceil(Math.random()*pokedex.length-1);
+        pokeID = Math.ceil(Math.random()*pokedex.length-1);
+        if (pokeID == 0){
+            pokeID = 1
+        }
         
         //Generation, genus, egg groups, flavor texts
         pokedexEntryData = ((await axios.get(`${API_URL}pokemon-species/${pokeID}`)).data)
         //Types, abilities, held items in wild, moves, sprite, ev yeild
         pokemonGameData = (await axios.get(`${API_URL}pokemon/${pokeID}`)).data
 
-        currentPokemon = new Pokemon(pokedexEntryData.id, pokedexEntryData.name, pokedexEntryData.flavor_text_entries, pokemonGameData.types, pokedexEntryData.generation.name, pokemonGameData.stats, pokedexEntryData.egg_groups, pokemonGameData.abilities, pokemonGameData.moves, pokemonGameData.held_items, pokedexEntryData.genera)
-        console.log(currentPokemon)
-        generateHints(currentPokemon)
-        createContent(hints[0])
+        roundStart(pokedexEntryData, pokemonGameData)
+
     } catch (error) {
 
         console.log(error)
@@ -41,6 +49,7 @@ button.addEventListener('click', async () => {
 
 function generateHints (pokemonObject){
 
+    hints = []
     if (pokemonObject.types.length > 1){
         hints.push(`This pokemon is ${pokemonObject.types[0]} and ${pokemonObject.types[1]} type`)
     } else if (pokemonObject.types.length = 1){
@@ -85,13 +94,22 @@ function generateHints (pokemonObject){
     hints.push(`This pokemon is known as the ${pokemonObject.genus}`)
 }
 
+function roundStart (pokedexData, gameData) {
+    currentPokemon = new Pokemon(pokedexData.id, pokedexData.name, pokedexData.flavor_text_entries, gameData.types, pokedexData.generation.name, gameData.stats, pokedexData.egg_groups, gameData.abilities, gameData.moves, gameData.held_items, pokedexData.genera)
+    console.log(currentPokemon)
+    generateHints(currentPokemon)
+    createContent(hints[0])
+}
+
 function createContent (hintAttribute){
     let newDiv = document.createElement('div')
     newDiv.classList.toggle('hint-and-guess') 
 
     let newHint = document.createElement('p')
     newHint.innerText = hintAttribute
+
     let newInput = document.createElement('input')
+
     let newButton = document.createElement('button')
     let newButtonImg = document.createElement('img')
     newButtonImg.src = 'images/pokeball.png'
@@ -99,17 +117,182 @@ function createContent (hintAttribute){
     newButtonImg.width = '150';
     newButton.classList.toggle('pokeball')
     newButton.appendChild(newButtonImg)
+
     newButton.onclick = function () {
         newDiv.removeChild(newButton)
         guessCounter++
-        console.log('Running guess')
+
         if (newInput.value.toLowerCase() == currentPokemon.name){
             console.log('correct guess')
+            playerScore++
             spriteImage.src = currentPokemon.sprite
+
+            let replayDiv = document.createElement('div')
+            replayDiv.classList.toggle('hint-and-guess') 
+            
+            roundResults.innerText = `You guessed correctly and won the round! You now have ${playerScore} points to my ${comScore} points. \nThe pokemon I was looking for this round was Pokemon ${currentPokemon.number}, ${(currentPokemon.name.substring(0,1).toUpperCase())+(currentPokemon.name.substring(1))}`
+            resultText.innerText = currentPokemon.flavorTexts[Math.floor(Math.random()*currentPokemon.flavorTexts.length)]
+
+            if(playerScore == 3){
+                gameResults.innerText = `You won with ${playerScore} points to my ${comScore} points! Click the pokeball to play again!`
+                let replayButton = document.createElement('button')
+                let replayButtonImg = document.createElement('img')
+                replayButtonImg.src = 'images/pokeball.png'
+                replayButtonImg.height = '150';
+                replayButtonImg.width = '150';
+                replayButton.classList.toggle('pokeball')
+                replayButton.onclick = async function () {
+                    resultsContent.removeChild(replayDiv)
+                    playerScore = 0
+                    comScore = 0
+                    guessCounter = 0
+                    resultText.innerText = ''
+                    roundResults.innerText = ''
+                    gameResults.innerText = ''
+                    while(pageContent.children[0]){
+                        pageContent.removeChild(pageContent.children[0])
+                    }
+                    spriteImage.src = 'https://www.colorhexa.com/303030.png'
+                    pokeID = Math.ceil(Math.random()*pokedex.length-1);
+                    if (pokeID == 0){
+                        pokeID = 1
+                    }
+                    
+                    //Generation, genus, egg groups, flavor texts
+                    pokedexEntryData = ((await axios.get(`${API_URL}pokemon-species/${pokeID}`)).data)
+                    //Types, abilities, held items in wild, moves, sprite, ev yeild
+                    pokemonGameData = (await axios.get(`${API_URL}pokemon/${pokeID}`)).data
+
+                    roundStart(pokedexEntryData, pokemonGameData)
+                }
+
+                replayButton.appendChild(newButtonImg)
+                replayDiv.appendChild(replayButton)
+
+                resultsContent.appendChild(replayDiv)
+            } else {
+                let replayButton = document.createElement('button')
+                let replayButtonImg = document.createElement('img')
+                replayButtonImg.src = 'images/pokeball.png'
+                replayButtonImg.height = '150';
+                replayButtonImg.width = '150';
+                replayButton.classList.toggle('pokeball')
+                replayButton.onclick = async function () {
+                    guessCounter = 0
+                    resultText.innerText = ''
+                    roundResults.innerText =''
+                    while(pageContent.children[0]){
+                        pageContent.removeChild(pageContent.children[0])
+                    }
+                    spriteImage.src = 'https://www.colorhexa.com/303030.png'
+                    pokeID = Math.ceil(Math.random()*pokedex.length-1);
+                    if (pokeID == 0){
+                        pokeID = 1
+                    }
+                    
+                    //Generation, genus, egg groups, flavor texts
+                    pokedexEntryData = ((await axios.get(`${API_URL}pokemon-species/${pokeID}`)).data)
+                    //Types, abilities, held items in wild, moves, sprite, ev yeild
+                    pokemonGameData = (await axios.get(`${API_URL}pokemon/${pokeID}`)).data
+
+                    roundStart(pokedexEntryData, pokemonGameData)
+                }
+
+                replayButton.appendChild(newButtonImg)
+                replayDiv.appendChild(replayButton)
+
+                pageContent.appendChild(replayDiv)
+            }
+
         } else if (guessCounter <= 7){
             createContent(hints[guessCounter])
         } else if (guessCounter > 7){
+            comScore++
             spriteImage.src = currentPokemon.sprite
+
+            let replayDiv = document.createElement('div')
+            replayDiv.classList.toggle('hint-and-guess') 
+
+            roundResults.innerText = `You ran out of hints and lost the round! I now have ${comScore} points to your ${playerScore} points. \nThe pokemon I was looking for this round was Pokemon ${currentPokemon.number}, ${(currentPokemon.name.substring(0,1).toUpperCase())+(currentPokemon.name.substring(1))}`
+            resultText.innerText = currentPokemon.flavorTexts[Math.floor(Math.random()*currentPokemon.flavorTexts.length)]
+            
+            if (comScore == 3){
+                gameResults.innerText = `You lost with ${playerScore} points to my ${comScore} points! Click the pokeball to play again!`
+                let replayButton = document.createElement('button')
+                let replayButtonImg = document.createElement('img')
+                replayButtonImg.src = 'images/pokeball.png'
+                replayButtonImg.height = '150';
+                replayButtonImg.width = '150';
+                replayButton.classList.toggle('pokeball')
+                replayButton.onclick = async function () {
+                    resultsContent.removeChild(replayDiv)
+                    playerScore = 0
+                    comScore = 0
+                    guessCounter = 0
+                    resultText.innerText = ''
+                    roundResults.innerText = ''
+                    gameResults.innerText = ''
+                    while(pageContent.children[0]){
+                        pageContent.removeChild(pageContent.children[0])
+                    }
+                    spriteImage.src = 'https://www.colorhexa.com/303030.png'
+                    pokeID = Math.ceil(Math.random()*pokedex.length-1);
+                    if (pokeID == 0){
+                        pokeID = 1
+                    }
+                    
+                    //Generation, genus, egg groups, flavor texts
+                    pokedexEntryData = ((await axios.get(`${API_URL}pokemon-species/${pokeID}`)).data)
+                    //Types, abilities, held items in wild, moves, sprite, ev yeild
+                    pokemonGameData = (await axios.get(`${API_URL}pokemon/${pokeID}`)).data
+
+                    roundStart(pokedexEntryData, pokemonGameData)
+                }
+
+                replayButton.appendChild(newButtonImg)
+                replayDiv.appendChild(replayButton)
+
+                resultsContent.appendChild(replayDiv)
+            } else {
+
+                let replayDiv = document.createElement('div')
+                replayDiv.classList.toggle('hint-and-guess') 
+                
+                
+
+                let replayButton = document.createElement('button')
+                let replayButtonImg = document.createElement('img')
+                replayButtonImg.src = 'images/pokeball.png'
+                replayButtonImg.height = '150';
+                replayButtonImg.width = '150';
+                replayButton.classList.toggle('pokeball')
+                replayButton.appendChild(newButtonImg)
+                replayDiv.appendChild(replayButton)
+
+                pageContent.appendChild(replayDiv)
+                replayButton.onclick = async function () {
+                    guessCounter = 0
+                    resultText.innerText = ''
+                    roundResults.innerText =''
+
+                    while(pageContent.children[0]){
+                        pageContent.removeChild(pageContent.children[0])
+                    }
+                    spriteImage.src = 'https://www.colorhexa.com/303030.png'
+                    pokeID = Math.ceil(Math.random()*pokedex.length-1);
+                    if (pokeID == 0){
+                        pokeID = 1
+                    }
+                    
+                    //Generation, genus, egg groups, flavor texts
+                    pokedexEntryData = ((await axios.get(`${API_URL}pokemon-species/${pokeID}`)).data)
+                    //Types, abilities, held items in wild, moves, sprite, ev yeild
+                    pokemonGameData = (await axios.get(`${API_URL}pokemon/${pokeID}`)).data
+
+                    roundStart(pokedexEntryData, pokemonGameData)
+
+                }
+            }
         }
     }
 
@@ -120,9 +303,6 @@ function createContent (hintAttribute){
     pageContent.appendChild(newDiv)
 }
 
-function parseGuess (guess) {
-    
-}
 
 class Pokemon {
     constructor(number, name, flavorTexts, types, generation, stats, eggGroups, abilities, moves, heldItems, genus){
