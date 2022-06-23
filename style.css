@@ -11,6 +11,7 @@
     flex-direction: row;
     align-self: center;
     align-content: center;
+    height: 150px;
 }
 
 .pokeball{
@@ -19,6 +20,25 @@
     height: 150px;
     width: 150px;
     border-style: none;
+}
+
+#full-page-contents{
+    background-color: #303030;
+    width: 1500px;
+    min-height: 1500px;
+    margin: auto;
+    display: flex;
+    flex-direction: column;
+    /* align-self: center;
+    align-content: center;
+    justify-self: center;
+    justify-content: center; */
+}
+
+#start-content{
+    color: ghostwhite;
+    align-self: center;
+    justify-self: center;
 }
 
 #results{
@@ -30,6 +50,7 @@
 }
 
 #dynamic-content{
+    margin: auto;
     align-content: space-evenly;
     justify-content: space-evenly;
     flex-direction: column;
@@ -42,7 +63,7 @@
 }
 
 body{
-    background-color: #303030;
+    background-color: #151515;
     
     font-family: 'Press Start 2P', cursive;
 }
@@ -59,10 +80,18 @@ h1{
     margin-right: auto;
 }
 
+h2{
+    color: #ffcb05;
+    font-family: inherit;
+    align-self: center;
+    width: 1000px;
+}
+
 p{
     color: inherit;
     font-family: inherit;
     align-self: center;
+    width: 1000px;
 }
 
 input{

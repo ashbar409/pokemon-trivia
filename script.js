@@ -19,7 +19,7 @@ let playerScore = 0
 let hints = []
 
 button.addEventListener('click', async () => {
-    pageContent.removeChild(button)
+    pageContent.removeChild(pageContent.children[0])
     try {
 
         if(pokedex == null){
@@ -118,7 +118,7 @@ function createContent (hintAttribute){
     newButton.appendChild(newButtonImg)
 
     newButton.onclick = function () {
-        newDiv.removeChild(newButton)
+        newButton.onclick = undefined
         guessCounter++
 
         if (newInput.value.toLowerCase() == currentPokemon.name){
@@ -128,7 +128,7 @@ function createContent (hintAttribute){
             let replayDiv = document.createElement('div')
             replayDiv.classList.toggle('hint-and-guess') 
             
-            roundResults.innerText = `You guessed correctly and won the round! You now have ${playerScore} points to my ${comScore} points. \nThe pokemon I was looking for this round was Pokemon ${currentPokemon.number}, ${(currentPokemon.name.substring(0,1).toUpperCase())+(currentPokemon.name.substring(1))}`
+            roundResults.innerText = `You guessed correctly and won the round! You now have ${playerScore} points to my ${comScore} points. \n\n\nThe pokemon I was looking for this round was Pokemon ${currentPokemon.number}, ${(currentPokemon.name.substring(0,1).toUpperCase())+(currentPokemon.name.substring(1))}`
             resultText.innerText = currentPokemon.flavorTexts[Math.floor(Math.random()*currentPokemon.flavorTexts.length)]
 
             if(playerScore == 3){
@@ -211,7 +211,7 @@ function createContent (hintAttribute){
             let replayDiv = document.createElement('div')
             replayDiv.classList.toggle('hint-and-guess') 
 
-            roundResults.innerText = `You ran out of hints and lost the round! I now have ${comScore} points to your ${playerScore} points. \nThe pokemon I was looking for this round was Pokemon ${currentPokemon.number}, ${(currentPokemon.name.substring(0,1).toUpperCase())+(currentPokemon.name.substring(1))}`
+            roundResults.innerText = `You ran out of hints and lost the round! I now have ${comScore} points to your ${playerScore} points. \n\n\nThe pokemon I was looking for this round was Pokemon ${currentPokemon.number}, ${(currentPokemon.name.substring(0,1).toUpperCase())+(currentPokemon.name.substring(1))}`
             resultText.innerText = currentPokemon.flavorTexts[Math.floor(Math.random()*currentPokemon.flavorTexts.length)]
             
             if (comScore == 3){

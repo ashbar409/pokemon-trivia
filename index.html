@@ -14,23 +14,29 @@
     <title>Pokemon Trivia</title>
 </head>
 <body>
-    <header>
-        <h1>Welcome to Who's That</h1>
-    </header>
-    <div class="flex">
-        <div class="pokemon">   
-            <img id="pokeLogo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/1280px-International_Pok%C3%A9mon_logo.svg.png" alt="">
-        </div>    
-    </div>
-    <div class="flex" id="dynamic-content">
-        <button>Click me to start!</button>
-        
-    </div>
-    <div class="flex" id="results">
-        <p id="round-end"></p>
-        <img id='sprite' src="https://www.colorhexa.com/303030.png" alt="">
-        <p id="flavor-text"></p>
-        <p id="game-end"></p>
+    <div id="full-page-contents">
+        <header>
+            <h1>Welcome to Who's That</h1>
+        </header>
+        <div class="flex">
+            <div class="pokemon">   
+                <img id="pokeLogo" src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/98/International_Pok%C3%A9mon_logo.svg/1280px-International_Pok%C3%A9mon_logo.svg.png" alt="">
+            </div>    
+        </div>
+        <div class="flex" id="dynamic-content">
+            <div class='flex 'id="start-content">
+                <p>Click the pokeball to begin!</p>
+                <button class="pokeball">
+                    <img src="images/pokeball.png" alt="" height="150px" width="150px">
+                </button>
+            </div>
+        </div>
+        <div class="flex" id="results">
+            <p id="round-end"></p>
+            <img id='sprite' src="https://www.colorhexa.com/303030.png" alt="">
+            <p id="flavor-text"></p>
+            <h2 id="game-end"></p>
+        </div>
     </div>
 </body>
 </html>
